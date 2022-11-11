@@ -1,0 +1,35 @@
+CC = gcc
+
+INSTALL_DIR = /usr/local
+LIB_INSTALL_DIR = $(INSTALL_DIR)/lib
+LIB_CURL_DIR = /usr/lib/x86_64-linux-gnu/
+
+
+CFLAGS = -I$(INSTALL_DIR)
+LDFLAGS = -Wl,-rpath=$(LIB_INSTALL_DIR)
+LDFLAGS += -L$(LIB_INSTALL_DIR)
+LDFLAGS += -L$(LIB_CURL_DIR)
+LIBS = -lsrtexp
+LIBS += -lsrt
+LIBS += -lyaml-cpp
+
+SAMPLE_APP_SRT_CALLER_C = sample_app_srt_caller_c
+SAMPLE_APP_SRT_LISTENER_C = sample_app_srt_listener_c
+SRCCALLER = sample_srtcaller.c
+SRCLISTENER = sample_srtlistener.c
+
+all: srt
+
+srt: $(SAMPLE_APP_SRT_CALLER_C) $(SAMPLE_APP_SRT_LISTENER_C)
+
+$(SAMPLE_APP_SRT_CALLER_C): $(SRCCALLER)
+	$(CC) -o $@ $(CFLAGS) $(SRCCALLER) $(LDFLAGS) $(LIBS)
+
+$(SAMPLE_APP_SRT_LISTENER_C): $(SRCLISTENER)
+	$(CC) -o $@ $(CFLAGS) $(SRCLISTENER) $(LDFLAGS) $(LIBS)
+
+clean:
+	-rm $(SAMPLE_APP_SRT_CALLER_C)
+	-rm $(SAMPLE_APP_SRT_LISTENER_C)
+
+.PHONY: all srt clean

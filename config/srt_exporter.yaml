@@ -1,0 +1,50 @@
+# sample config for srt exporter
+
+# global settings for srt exporters without customized configuration
+global:
+  # ip and port on which http server of srt exporter would be established
+  # an available port between port_min and port_max would be chosen
+  ip: 0.0.0.0
+  port_min: 9901
+  port_max: 10028
+
+  # srt exporter's behavior mode of collecting srt socket's statistics
+  # collect_on_request/collect_periodically(not supported yet)/receive_passively(not supported yet)
+  collector_mode: collect_on_request
+
+  # the set of variables to export in the metrics
+  filter:
+    # whitelist/blacklist/srt_caller/srt_listener/srt_common
+    filter_mode: srt_common
+
+  # labels to present in the metrics for managing the data better
+  labels:
+    - name: source
+      value: srt_exporter
+
+
+# customized configuration for each srt exporter object
+srt_exporters:
+  # srt exporter's name string is the identity for srt exporter to allocate the corresponding configuration
+  - name: sample_srt_caller
+    ip: 0.0.0.0
+    # port value here does not have to be within global port range
+    # if port is not specified, available port would be selected according to global configuration
+    port: 10027
+    collector_mode: collect_on_request
+    filter:
+      filter_mode: whitelist
+      # if filter mode is whitelist or blacklist, variable names list called "whitelist" or "blacklist" is expected
+      # refer to the variable names in "struct CBytePerfMon" of https://github.com/Haivision/srt/blob/master/srtcore/srt.h
+      whitelist: ['pktSentTotal', 'pktRecvTotal', 'pktSndLossTotal', 'pktRcvLossTotal', 'pktSent', 'pktRecv', 'pktSndLoss', 'pktRcvLoss', 'pktRetrans', 'pktRcvRetrans', 'pktSentACK', 'pktRecvACK', 'pktSentNAK', 'pktRecvNAK', 'byteSent', 'byteRecv', 'usSndDuration', 'msSndTsbPdDelay', 'mbpsBandwidth', 'msRTT']
+    labels:
+      - name: role
+        value: srt_caller
+  - name: sample_srt_listener
+    ip: 0.0.0.0
+    port: 10028
+    filter:
+      filter_mode: srt_listener
+    labels:
+      - name: role
+        value: srt_listener
