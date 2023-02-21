@@ -22,10 +22,9 @@
     Install client library first.
 
     Clone the following source code:  
-    > https://github.com/jupp0r/prometheus-cpp.git
+    > https://github.com/Haivision/srt-prometheus-exporter.git
 
-    Then build and install this library according to its readme file:  
-    > https://github.com/jupp0r/prometheus-cpp/tree/76a3ebfc35d871c7aae71e0e7d9b64e1a3bd58ba#via-cmake
+    Then build and install the library.
 
     Install `curl`, `cmake`, `pkg-config` first, because the compilation of this library depends on them.
 
@@ -33,8 +32,8 @@
     sudo apt-get install libcurl4-openssl-dev build-essential cmake zlib1g-dev pkg-config -y
     mkdir ~/Works
     cd ~/Works
-    git clone https://github.com/jupp0r/prometheus-cpp.git
-    cd prometheus-cpp
+    git clone https://github.com/Haivision/srt-prometheus-exporter.git
+    cd srt-prometheus-exporter
     git submodule init
     git submodule update
     mkdir _build
