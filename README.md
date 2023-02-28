@@ -1,42 +1,38 @@
-# Prometheus SRT Exporter
+# SRT Prometheus Exporter
 
-## Description
+## Overview
 
-  SRT Exporter is a Prometheus exporter for Secure Reliable Transport protocol.
+SRT Prometheus Exporter is an implementation for Prometheus exporter for Secure Reliable Transport (SRT) protocol.
 
-  <img src="./document/images/overview1.png" alt="overview" width="800">
+<img src="./document/images/overview1.png" alt="overview" width="800">
 
-  SRT Exporter library is based on [SRT Stats APIs](https://github.com/Haivision/srt/blob/master/docs/API/statistics.md) and [Prometheus Instrumenting Client Library](https://prometheus.io/docs/instrumenting/clientlibs/).  
-  It allows us to get the statistics for each SRT socket and send those data to Prometheus as metrics on request.  
-
+SRT Prometheus Exporter is a library built on top of [SRT Stats APIs](https://github.com/Haivision/srt/blob/master/docs/API/statistics.md) and [Prometheus Instrumenting Client Library](https://prometheus.io/docs/instrumenting/clientlibs/).
+It allows user application to get the statistics for each SRT socket and send those data to Prometheus as metrics on request.
+SRT Prometheus Exporter integrates HTTP server in it so that statistics can be scraped by the request from Prometheus.
 
 ## Supported Versions
 
-  [SRT](https://github.com/Haivision/srt/): v1.4.0  
-  Ubuntu: 20.04  
+It could be working the following versions or latter, but not recommended to be used except following specific versions since it does not verify with other versions.
 
+- Ubuntu: 20.04 Focal Fossa
+- [SRT v1.4.0](https://github.com/Haivision/srt/releases/tag/v1.4.0)
 
-## Building and Using
+## Tutorials
 
-  Please check details in [building, installing, and integration tutorial](./document/tutorial.md).
+- [Getting Started](./document/tutorial.md)
 
+## API Document
 
-## API
-
-  Please check details in [api description](./document/api.md).
-
+- [API Document](./document/api.md)
 
 ## Development
 
-  Please check details in [design document and todo list](./document/design.md).
-
+- [Development Document](./document/design.md)
 
 ## License
 
-  .
-
+Mozilla Public License Version 2.0, [LICENSE](./LICENSE)
 
 ## Samples
 
-  <img src="./document/images/overview2.png" alt="sample_overview" width="800">
-
+<img src="./document/images/overview2.png" alt="sample_overview" width="800">
