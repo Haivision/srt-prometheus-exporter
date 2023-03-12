@@ -16,9 +16,6 @@
 
 #include "srtexp_define.hpp"
 
-
-// Please check detailed API introduction at "../document/api.md"
-
 /**
  * SRT Exporter library initialization, load configuration to memory
  *
