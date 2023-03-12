@@ -24,7 +24,8 @@ apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zl
 - [prometheus-cpp](https://github.com/jupp0r/prometheus-cpp) library
 
   ```bash
-  cd srt-prometheus-exporter
+  git clone https://github.com/jupp0r/prometheus-cpp
+  cd prometheus-cpp
   git submodule init
   git submodule update
   mkdir _build
@@ -38,11 +39,9 @@ apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zl
 
   ```bash
   ls /usr/local/lib/libprometheus-cpp*
-  /usr/local/lib/libprometheus-cpp-core.so         /usr/local/lib/libprometheus-cpp-pull.so.0.12.3
-  /usr/local/lib/libprometheus-cpp-core.so.0.12    /usr/local/lib/libprometheus-cpp-push.so
-  /usr/local/lib/libprometheus-cpp-core.so.0.12.3  /usr/local/lib/libprometheus-cpp-push.so.0.12
-  /usr/local/lib/libprometheus-cpp-pull.so         /usr/local/lib/libprometheus-cpp-push.so.0.12.3
-  /usr/local/lib/libprometheus-cpp-pull.so.0.12
+  /usr/local/lib/libprometheus-cpp-core.so        /usr/local/lib/libprometheus-cpp-pull.so        /usr/local/lib/libprometheus-cpp-push.so
+  /usr/local/lib/libprometheus-cpp-core.so.1.1    /usr/local/lib/libprometheus-cpp-pull.so.1.1    /usr/local/lib/libprometheus-cpp-push.so.1.1
+  /usr/local/lib/libprometheus-cpp-core.so.1.1.0  /usr/local/lib/libprometheus-cpp-pull.so.1.1.0  /usr/local/lib/libprometheus-cpp-push.so.1.1.0
   ```
 
 - SRT library (If necessary)
