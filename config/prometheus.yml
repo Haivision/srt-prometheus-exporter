@@ -17,7 +17,7 @@ global:
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  # The job name is added as a label `job=<job_name>` to any time series scraped from this config.
   - job_name: 'sample_srt_exporter'
 
     # Override the global default and scrape targets from this job every 1 seconds.
@@ -32,6 +32,7 @@ scrape_configs:
 
   - job_name: srt-exporter
     static_configs:
-      # Put all potential ports may to be used here, so that we don't have to reconfigure and restart Prometheus frequently.
+      # Put all potential ports may to be used here,
+      # so that we don't have to reconfigure and restart Prometheus frequently.
       - targets: ['localhost:10027']
       - targets: ['localhost:10028']
