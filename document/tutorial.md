@@ -13,15 +13,15 @@ There are several ways to install and run Prometheus server, it is up to user to
 
 - Install [Debian package](https://packages.debian.org/search?keywords=prometheus)
 
-
 - Snap pacakge
 
   ```bash
   sudo snap install prometheus
   ```
 
-  Default configuration file would be found at `/var/snap/prometheus/53/prometheus.yml`.
+  Default configuration file would be found at `/var/snap/prometheus/<numbers>/prometheus.yml`.
   please, edit the configuration file, so that Prometheus can find the correct url to scrape.
+  If we want to change the command line option for Prometheus, `/var/snap/prometheus/<numbers>/daemon_arguments` needs to be modified accordingly, and then restart the prometheus snap package.
 
 ## Sample
 
@@ -36,9 +36,12 @@ cd srt-prometheus-exporter/sample
 make
 ```
 
-## Run Endpoints
+### Run
+
+Make sure that current directory is `srt-prometheus-exporter/sample` because those samples will read the configuration file for SRT Prometheus Exporter with relative path `../config/srt_exporter.yaml`.
 
 ```bash
+cd srt-prometheus-exporter/sample
 ./sample_app_srt_caller_c
 ```
 
@@ -54,6 +57,7 @@ Access `http://127.0.0.1:10027/metrics` from a browser to trigger an http reques
 
 
 ```bash
+cd srt-prometheus-exporter/sample
 ./sample_app_srt_listener_c
 ```
 
@@ -67,14 +71,17 @@ Access `http://127.0.0.1:10028/metrics` from a browser to trigger an http reques
 
 <img src="./images/sample_srt_listener.png" alt="sample_srt_listener" width="400">
 
-## Run Prometheus
+### Start Prometheus
 
-For example, using Prometheus from a docker image.
+- Docker (Recommended)
 
 ```bash
+cd srt-prometheus-exporter
+cp -rf ./config/prometheus.yml /tmp/prometheus.yml
 docker run -d \
--v $(PROMETHEUS_CONFIG_DIR):/etc/prometheus/ \
+-v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
 --network=host prom/prometheus \
+--name prometheus \
 --web.enable-lifecycle \
 --config.file=/etc/prometheus/prometheus.yml \
 --storage.tsdb.path=/prometheus \
