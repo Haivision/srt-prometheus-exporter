@@ -33,9 +33,9 @@ This makes it easier to access and take advantage of statistics in many use case
 - [Design](./document/design.md)
 - [Proposals](./document/proposals.md)
 
-### Contribution
+### [Contribution](./CONTRIBUTING.md)
 
-***T.B.D*** We can accept incoming issues and PRs, but rules are still under consideration.
+We can accept incoming issues and PRs, but rules are still under consideration.
 
 ## License
 
