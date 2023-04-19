@@ -81,7 +81,6 @@ cp -rf ./config/prometheus.yml /tmp/prometheus.yml
 docker run -d \
 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
 --network=host prom/prometheus \
---name prometheus \
 --web.enable-lifecycle \
 --config.file=/etc/prometheus/prometheus.yml \
 --storage.tsdb.path=/prometheus \
