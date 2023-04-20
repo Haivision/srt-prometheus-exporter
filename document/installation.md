@@ -44,6 +44,12 @@ apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zl
   /usr/local/lib/libprometheus-cpp-core.so.1.1.0  /usr/local/lib/libprometheus-cpp-pull.so.1.1.0  /usr/local/lib/libprometheus-cpp-push.so.1.1.0
   ```
 
+  Set `/usr/local/lib` to `LD_LIBRARY_PATH` environmental variable to avoid dynamic link error.
+
+  ```bash
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+  ```
+
 - SRT library (If necessary)
 
   The stable version can be installed with `apt install libsrt-dev` on `Ubuntu 20.04` version is `v1.4.0`.
