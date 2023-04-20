@@ -213,16 +213,16 @@ void SrtExpConfig::LoadSrtExpCollectorConfig(SrtExpCollectorConfig &cfg, const Y
                     }
                 }
             }
-            else if (str == "srt_caller") {
-                cfg.filterMode = SrtExpFilterMode::SRT_CALLER;
-                YAML::Node temp = YAML::Load(SRT_CALLER_VARLIST);
+            else if (str == "srt_source") {
+                cfg.filterMode = SrtExpFilterMode::SRT_SOURCE;
+                YAML::Node temp = YAML::Load(SRT_SOURCE_VARLIST);
                 for (auto tmp : temp) {
                     cfg.varList.push_back(tmp.as<std::string>());
                 }
             }
-            else if (str == "srt_listener") {
-                cfg.filterMode = SrtExpFilterMode::SRT_LISTENER;
-                YAML::Node temp = YAML::Load(SRT_LISTENER_VARLIST);
+            else if (str == "srt_destination") {
+                cfg.filterMode = SrtExpFilterMode::SRT_DESTINATION;
+                YAML::Node temp = YAML::Load(SRT_DESTINATION_VARLIST);
                 for (auto tmp : temp) {
                     cfg.varList.push_back(tmp.as<std::string>());
                 }

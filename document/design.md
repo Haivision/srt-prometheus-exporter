@@ -54,7 +54,7 @@ global:
         value: srt_exporter
 
 srt_exporters:
-    - name: sample_srt_caller
+    - name: sample_srt_source
     ip: 127.0.0.1
     port: 10027
     collector_mode: collect_on_request
@@ -64,11 +64,11 @@ srt_exporters:
     labels:
         - name: sample_name_1
         value: sample_value_1
-    - name: sample_srt_listener
+    - name: sample_srt_destination
     ip: 127.0.0.1
     port: 10028
     filter:
-        filter_mode: srt_listener
+        filter_mode: srt_destination
     labels:
         - name: sample_name_2
         value: sample_value_2
@@ -96,9 +96,9 @@ srt_exporters:
   `filter_mode` takes the following values:
   - `whitelist`: input a list of variables to be included in the metrics, `whitelist` should be specified.
   - `blacklist`: input a list of variables to be excluded in the metrics, `blacklist` should be specified.
-  - `srt_caller`: use a list of variables usually cared by the SRT caller. No variable list need to be specified.
-  - `srt_listener`: use a list of variables usually cared by the SRT listener.
-  - `srt_common`: use a list of variables usually cared by the SRT caller or listener. No variable list need to be specified.
+  - `srt_source`: use a list of variables usually cared by the SRT source. No variable list need to be specified.
+  - `srt_destination`: use a list of variables usually cared by the SRT destination.
+  - `srt_common`: use a list of variables usually cared by the SRT source or destination. No variable list need to be specified.
 
 - Labels
 
@@ -112,7 +112,7 @@ srt_exporters:
 | name | srt_exporters | the identity of an SRT Exporter object || string | don't use the same name for different objects |
 | port | srt_exporters | a local port to start http server for metrics collecting || legal port number | don't have to be within [port_min, port_max] |
 | collector_mode | global/srt_exporters | metrics collecting and caching strategy || "collect_on_request" | only one mode is supported for now |
-| filter | global/srt_exporters | define a set of variables to export | filter_mode | "whitelist", "blacklist", "srt_caller", "srt_listener", "srt_common" ||
+| filter | global/srt_exporters | define a set of variables to export | filter_mode | "whitelist", "blacklist", "srt_source", "srt_destination", "srt_common" ||
 |||| whitelist | a list of variable name strings | required only when filter mode is "whitelist" |
 |||| blacklist | a list of variable name strings | required only when filter mode is "blacklist" |
 | labels | global/srt_exporters | a list of name-value pairs to be added to all metrics | name | string ||
