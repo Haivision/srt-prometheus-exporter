@@ -23,7 +23,15 @@ function mark {
     export $1=`pwd`;
 }
 
+function exit_trap() {
+    if [ $? != 0 ]; then
+        echo "Command [$BASH_COMMAND] is failed"
+        exit 1
+    fi
+}
+
 function install_prerequisites () {
+    trap exit_trap ERR
     echo "[${FUNCNAME[0]}]: update and install dependent packages."
     apt update && apt upgrade -y
     apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zlib1g-dev git libsrt-dev libyaml-cpp-dev libsrt-dev
@@ -31,6 +39,7 @@ function install_prerequisites () {
 }
 
 function install_prometheus_cpp () {
+    trap exit_trap ERR
     echo "[${FUNCNAME[0]}]: build and install prometheus-cpp."
     git clone https://github.com/jupp0r/prometheus-cpp
     cd prometheus-cpp
@@ -46,18 +55,21 @@ function install_prometheus_cpp () {
 }
 
 function install_srt_exporter () {
+    trap exit_trap ERR
     echo "[${FUNCNAME[0]}]: build and install SRT Prometheus Exporter."
     make
     cd $there
 }
 
 function uninstall_srt_exporter () {
+    trap exit_trap ERR
     echo "[${FUNCNAME[0]}]: uninstall SRT Prometheus Exporter."
     make clean
     cd $there
 }
 
 function build_sample_apps () {
+    trap exit_trap ERR
     echo "[${FUNCNAME[0]}]: build SRT Prometheus Exporter sample application."
     cd sample
     make
@@ -72,6 +84,9 @@ export DEBIAN_FRONTEND=noninteractive
 
 # mark the working space root directory, so that we can come back anytime with `cd $there`
 mark there
+
+# set the trap on error
+trap exit_trap ERR
 
 # call install functions in sequence
 install_prerequisites
