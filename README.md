@@ -1,5 +1,7 @@
 # SRT Prometheus Exporter
 
+[![build](https://github.com/Haivision/srt-prometheus-exporter/actions/workflows/build.yml/badge.svg)](https://github.com/Haivision/srt-prometheus-exporter/actions/workflows/build.yml)
+
 ## Overview
 
 SRT Prometheus Exporter is an implementation of [Prometheus](https://github.com/prometheus/prometheus) Exporter for [Secure Reliable Transport (SRT)](https://github.com/Haivision/srt) protocol.
