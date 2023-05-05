@@ -54,7 +54,7 @@ global:
         value: srt_exporter
 
 srt_exporters:
-    - name: sample_srt_source
+    - name: sample_srt_caller
     ip: 127.0.0.1
     port: 10027
     collector_mode: collect_on_request
@@ -64,7 +64,7 @@ srt_exporters:
     labels:
         - name: sample_name_1
         value: sample_value_1
-    - name: sample_srt_destination
+    - name: sample_srt_listener
     ip: 127.0.0.1
     port: 10028
     filter:

@@ -21,7 +21,7 @@
 
 int main() {
     char configFile[32] = "../config/srt_exporter.yaml";
-    char exporterName[32] = "sample_srt_source";
+    char exporterName[32] = "sample_srt_caller";
     int id = -1;
 
     SRTSOCKET srtsock = SRT_INVALID_SOCK;
@@ -44,7 +44,7 @@ int main() {
 
         return -1;
     }
-    srtexp_c_label_register("application", "sample_srtsource", NULL, id);
+    srtexp_c_label_register("application", "sample_srtcaller", NULL, id);
     srtexp_c_label_register("importance", "special", "pktSentTotal", id);
     srtexp_c_label_register("importance", "normal", "pktSentTotal", id);
     //srtexp_c_label_register("importance", NULL, "pktSentTotal", id);

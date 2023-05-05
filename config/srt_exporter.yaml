@@ -35,7 +35,7 @@ global:
 # customized configuration for each srt exporter object
 srt_exporters:
   # srt exporter's name string is the identity for srt exporter to allocate the corresponding configuration
-  - name: sample_srt_source
+  - name: sample_srt_caller
     ip: 0.0.0.0
     # port value here does not have to be within global port range
     # if port is not specified, available port would be selected according to global configuration
@@ -49,7 +49,7 @@ srt_exporters:
     labels:
       - name: role
         value: srt_source
-  - name: sample_srt_destination
+  - name: sample_srt_listener
     ip: 0.0.0.0
     port: 10028
     filter:

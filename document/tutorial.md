@@ -29,7 +29,7 @@ There are several ways to install and run Prometheus server, it is up to user to
 
 ### Build
 
-`sample_app_srt_source_c` and `sample_app_srt_destination_c` can be compiled.
+`sample_srtcaller` and `sample_srtlistener` can be compiled.
 
 ```bash
 cd srt-prometheus-exporter/sample
@@ -42,34 +42,34 @@ Make sure that current directory is `srt-prometheus-exporter/sample` because tho
 
 ```bash
 cd srt-prometheus-exporter/sample
-./sample_app_srt_source_c
+./sample_srtcaller
 ```
 
 A sample of SRT source application.
 
 It creates SRT socket and updates SRT socket information to SRT Exporter library.
-Its SRT Exporter object's name is `sample_srt_source`.
+Its SRT Exporter object's name is `sample_srt_caller`.
 It tries to connect port `8888` with this SRT socket. Once connection is accepted, this application keeps sending packages to the destination each second.
 
 Access `http://127.0.0.1:10027/metrics` from a browser to trigger an http request to it manually.
 
-<img src="./images/sample_srt_source.png" alt="sample_srt_source" width="400">
+<img src="./images/sample_srt_source.png" alt="sample_srt_caller" width="400">
 
 
 ```bash
 cd srt-prometheus-exporter/sample
-./sample_app_srt_destination_c
+./sample_srtlistener
 ```
 
 A sample of SRT destination application.
 
 It starts listening to port on `8888` when application started. Once an SRT source wants to connect this port, it accepts the connection and starts receiving packages from this connection.
 The SRT socket of this connection would be updated to SRT exporter once the connection is established. Thus, SRT socket statistic requested from Prometheus can be collected from SRT library.
-Its SRT Exporter object's name is `sample_srt_destination`.
+Its SRT Exporter object's name is `sample_srt_listener`.
 
 Access `http://127.0.0.1:10028/metrics` from a browser to trigger an http request to it manually.
 
-<img src="./images/sample_srt_destination.png" alt="sample_srt_destination" width="400">
+<img src="./images/sample_srt_destination.png" alt="sample_srt_listener" width="400">
 
 ### Start Prometheus
 
