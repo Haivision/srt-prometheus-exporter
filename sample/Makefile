@@ -22,23 +22,23 @@ LIBS = -lsrtexp
 LIBS += -lsrt
 LIBS += -lyaml-cpp
 
-SAMPLE_APP_SRT_CALLER = sample_srtcaller
-SAMPLE_APP_SRT_LISTENER = sample_srtlistener
-SRC_CALLER = sample_srtcaller.c
-SRC_LISTENER = sample_srtlistener.c
+SAMPLE_APP_SRT_SOURCE = sample_srtsource
+SAMPLE_APP_SRT_DESTINATION = sample_srtdestination
+SRC_SOURCE = sample_srtsource.c
+SRC_DESTINATION = sample_srtdestination.c
 
 all: srt
 
-srt: $(SAMPLE_APP_SRT_CALLER) $(SAMPLE_APP_SRT_LISTENER)
+srt: $(SAMPLE_APP_SRT_SOURCE) $(SAMPLE_APP_SRT_DESTINATION)
 
-$(SAMPLE_APP_SRT_CALLER): $(SRC_CALLER)
-	$(CC) -o $@ $(CFLAGS) $(SRC_CALLER) $(LDFLAGS) $(LIBS)
+$(SAMPLE_APP_SRT_SOURCE): $(SRC_SOURCE)
+	$(CC) -o $@ $(CFLAGS) $(SRC_SOURCE) $(LDFLAGS) $(LIBS)
 
-$(SAMPLE_APP_SRT_LISTENER): $(SRC_LISTENER)
-	$(CC) -o $@ $(CFLAGS) $(SRC_LISTENER) $(LDFLAGS) $(LIBS)
+$(SAMPLE_APP_SRT_DESTINATION): $(SRC_DESTINATION)
+	$(CC) -o $@ $(CFLAGS) $(SRC_DESTINATION) $(LDFLAGS) $(LIBS)
 
 clean:
-	-rm $(SAMPLE_APP_SRT_CALLER)
-	-rm $(SAMPLE_APP_SRT_LISTENER)
+	-rm $(SAMPLE_APP_SRT_SOURCE)
+	-rm $(SAMPLE_APP_SRT_DESTINATION)
 
 .PHONY: all srt clean
