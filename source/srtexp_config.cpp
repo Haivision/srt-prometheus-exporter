@@ -83,7 +83,7 @@ void SrtExpConfig::LoadConfigFile(const std::string& configFile) {
             if (srtexp["port"]) {
                 _objConfig.back().port = srtexp["port"].as<int>();
             }
-            LoadDefaultSrtExpCollectorConfig(_objConfig.back().config);
+            LoadDefaultSrtExpCollectorConfig(&(_objConfig.back().config));
             LoadSrtExpCollectorConfig(&(_objConfig.back().config), srtexp);
         }
     }
@@ -273,8 +273,8 @@ int SrtExpConfig::IsPortAvailable(std::string ip, int port) {
     addr.sin_port = htons(port);
     ret = inet_pton(AF_INET, ip.c_str(), &addr.sin_addr);
     if (ret == 0 || ret == -1) {
-        logger::SrtLog_Error("Wrong ip address input or available address
-                             family not found.");
+        logger::SrtLog_Error("Wrong ip address input or available address"
+                             "family not found.");
         close(fd);
         return 0;
     }

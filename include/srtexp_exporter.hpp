@@ -24,8 +24,6 @@
 
 namespace srt_exporter {
 
-// using namespace prometheus;
-
 class SrtExpCollector;
 
 class SrtExporter : public std::enable_shared_from_this<SrtExporter>{
@@ -36,7 +34,7 @@ class SrtExporter : public std::enable_shared_from_this<SrtExporter>{
     // configuration
     void InitSrtExporter();
 
-    std::shared_ptr<Exposer> GetSrtExposer() {return _exposer;}
+    std::shared_ptr<prometheus::Exposer> GetSrtExposer() {return _exposer;}
     std::shared_ptr<SrtExpCollector> GetSrtExpCollector() {return _collector;}
     void ResetSrtExpCollector() {_collector = nullptr;}
     void SetSrtExpCollector(SrtExpCollectorMode collectorMode);
@@ -56,7 +54,7 @@ class SrtExporter : public std::enable_shared_from_this<SrtExporter>{
     // object implemented by Prometheus c++ client library
     // providing the http server for Prometheus to request metrics from,
     // and an interface to register collector function
-    std::shared_ptr<Exposer> _exposer;
+    std::shared_ptr<prometheus::Exposer> _exposer;
     // SRT Exporter collector object of this SRT Exporter object
     std::shared_ptr<SrtExpCollector> _collector;
 };

@@ -18,8 +18,6 @@ namespace srt_exporter {
 
 extern std::shared_ptr<SrtExpConfig> srtExpConfig;
 
-// using namespace prometheus;
-
 // SrtExpCollector
 SrtExpCollector::SrtExpCollector(std::shared_ptr<SrtExporter> srtExp)
     : _srtExp(srtExp) {
@@ -102,7 +100,7 @@ SrtExpRet SrtExpCollector::SrtSockRegister(SRTSOCKET *sock, int sockNum) {
 }
 
 void SrtExpCollector::ValueToMetricFamily(
-    const SrtDataMapper *map, MetricFamily *metric, SRTSOCKET sock) const {
+    const SrtDataMapper *map, prometheus::MetricFamily *metric, SRTSOCKET sock) const {
     logger::SrtLog_Debug(__FUNCTION__);
     logger::SrtLog_Debug("Calculate number of labels.");
     int labelNum = 1 + map->label.size() + (*_commonLabel).size();
@@ -111,17 +109,17 @@ void SrtExpCollector::ValueToMetricFamily(
     double valueDouble = 0;
     switch (map->structType) {
         case SrtDataValueType::SRT_INT:
-            valueDouble = *reinterpret_cast<int *>(map->data);
+            valueDouble = *reinterpret_cast<const int *>(map->data);
             break;
         case SrtDataValueType::SRT_LONG_LONG:
-            valueDouble = *reinterpret_cast<int64_t *>(map->data);
+            valueDouble = *reinterpret_cast<const int64_t *>(map->data);
             break;
         case SrtDataValueType::SRT_UNSIGNED_LONG_LONG:
-            valueDouble = *reinterpret_cast<uint64_t *>(map->data);
+            valueDouble = *reinterpret_cast<const uint64_t *>(map->data);
             break;
         case SrtDataValueType::SRT_DOUBLE:
         default:
-            valueDouble = *reinterpret_cast<double *>(map->data);
+            valueDouble = *reinterpret_cast<const double *>(map->data);
     }
 
     logger::SrtLog_Debug("Fill metric.");
@@ -143,17 +141,17 @@ void SrtExpCollector::ValueToMetricFamily(
             = (*_commonLabel)[i].value;
     }
     switch (metric->type) {
-        case MetricType::Gauge:
+        case prometheus::MetricType::Gauge:
             metric->metric[0].gauge.value = valueDouble;
             break;
-        case MetricType::Counter:
+        case prometheus::MetricType::Counter:
             metric->metric[0].counter.value = valueDouble;
             break;
-        case MetricType::Summary:
+        case prometheus::MetricType::Summary:
             break;
-        case MetricType::Histogram:
+        case prometheus::MetricType::Histogram:
             break;
-        case MetricType::Untyped:
+        case prometheus::MetricType::Untyped:
         default:
             metric->metric[0].untyped.value = valueDouble;
     }
@@ -200,7 +198,7 @@ void SrtExpCollector::DumpFilter() {
 
 
 // SrtExpCollectorModeOne
-std::vector<MetricFamily> SrtExpCollectorModeOne::Collect() const {
+std::vector<prometheus::MetricFamily> SrtExpCollectorModeOne::Collect() const {
     logger::SrtLog_Debug(__FUNCTION__);
 
     ClearTranslated();
@@ -234,23 +232,23 @@ void SrtExpCollectorModeOne::DataAdaptor(SRT_TRACEBSTATS *stats) const {
             case SrtDataValueType::SRT_INT:
                 *reinterpret_cast<int *>(map->data)
                     = *reinterpret_cast<int *>(
-                        reinterpret_cast<char *>stats + map->offset);
+                        reinterpret_cast<char *>(stats) + map->offset);
                 break;
             case SrtDataValueType::SRT_LONG_LONG:
                 *reinterpret_cast<int64_t *>(map->data)
                     = *reinterpret_cast<int64_t *>(
-                        reinterpret_cast<char *>stats + map->offset);
+                        reinterpret_cast<char *>(stats) + map->offset);
                 break;
             case SrtDataValueType::SRT_UNSIGNED_LONG_LONG:
                 *reinterpret_cast<uint64_t *>(map->data)
                     = *reinterpret_cast<uint64_t *>(
-                        reinterpret_cast<char *>stats + map->offset);
+                        reinterpret_cast<char *>(stats) + map->offset);
                 break;
             case SrtDataValueType::SRT_DOUBLE:
             default:
                 *reinterpret_cast<double *>(map->data)
                     = *reinterpret_cast<double *>(
-                        reinterpret_cast<char *>stats + map->offset);
+                        reinterpret_cast<char *>(stats) + map->offset);
         }
     }
 }

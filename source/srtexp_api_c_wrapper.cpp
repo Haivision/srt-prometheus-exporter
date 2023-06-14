@@ -8,9 +8,9 @@
  *
  */
 
+#include "export/srtexp_api.hpp"
 #include "export/srtexp_api_c_wrapper.h"
 
-#include "export/srtexp_api.hpp"
 #include "export/srtexp_define.hpp"
 
 
