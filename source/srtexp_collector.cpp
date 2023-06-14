@@ -99,8 +99,8 @@ SrtExpRet SrtExpCollector::SrtSockRegister(SRTSOCKET *sock, int sockNum) {
     return SrtExpRet::SRT_EXP_SUCCESS;
 }
 
-void SrtExpCollector::ValueToMetricFamily(
-    const SrtDataMapper *map, prometheus::MetricFamily *metric, SRTSOCKET sock) const {
+void SrtExpCollector::ValueToMetricFamily(const SrtDataMapper *map,
+    prometheus::MetricFamily *metric, SRTSOCKET sock) const {
     logger::SrtLog_Debug(__FUNCTION__);
     logger::SrtLog_Debug("Calculate number of labels.");
     int labelNum = 1 + map->label.size() + (*_commonLabel).size();
