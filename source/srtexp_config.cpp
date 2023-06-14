@@ -8,7 +8,7 @@
  *
  */
 
-#include "srtexp_config.hpp"
+#include "include/srtexp_config.hpp"
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -16,16 +16,17 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
 #include <stdexcept>
 
-#include "srtexp_logger.hpp"
+#include "include/srtexp_logger.hpp"
 
 
 namespace srt_exporter {
 
 // SrtExpConfig
 SrtExpConfig::SrtExpConfig() {
-    LoadDefaultConfig(_globalConfig);
+    LoadDefaultConfig(&_globalConfig);
     _objConfig.clear();
 }
 
@@ -51,28 +52,30 @@ void SrtExpConfig::LoadConfigFile(const std::string& configFile) {
             _globalConfig.ip = config["global"]["ip"].as<std::string>();
         }
         if (config["global"]["port_min"] && config["global"]["port_max"]) {
-            if (config["global"]["port_min"].as<int>() <= config["global"]["port_max"].as<int>()) {
+            if (config["global"]["port_min"].as<int>()
+                <= config["global"]["port_max"].as<int>()) {
                 _globalConfig.portMin = config["global"]["port_min"].as<int>();
                 _globalConfig.portMax = config["global"]["port_max"].as<int>();
             }
         }
-        LoadSrtExpCollectorConfig(_globalConfig.config, config["global"]);
+        LoadSrtExpCollectorConfig(&(_globalConfig.config), config["global"]);
     }
 
     if (config["srt_exporters"]) {
-        logger::SrtLog_Debug("srt_exporters: " + std::to_string(config["srt_exporters"].size()));
+        logger::SrtLog_Debug("srt_exporters: "
+                             + std::to_string(config["srt_exporters"].size()));
         for (auto srtexp : config["srt_exporters"]) {
-            if (srtexp["name"]){
+            if (srtexp["name"]) {
                 if (FindSrtExpObjConfig(srtexp["name"].as<std::string>())) {
                     continue;
                 }
                 _objConfig.emplace_back(SrtExpObjConfig());
                 _objConfig.back().name = srtexp["name"].as<std::string>();
                 logger::SrtLog_Debug(_objConfig.back().name);
-            }
-            else {
+            } else {
                 _objConfig.emplace_back(SrtExpObjConfig());
-                _objConfig.back().name = "unnamed_srt_exporter_" + std::to_string(_objConfig.size());
+                _objConfig.back().name = "unnamed_srt_exporter_"
+                                         + std::to_string(_objConfig.size());
             }
             if (srtexp["ip"]) {
                 _objConfig.back().ip = srtexp["ip"].as<std::string>();
@@ -81,7 +84,7 @@ void SrtExpConfig::LoadConfigFile(const std::string& configFile) {
                 _objConfig.back().port = srtexp["port"].as<int>();
             }
             LoadDefaultSrtExpCollectorConfig(_objConfig.back().config);
-            LoadSrtExpCollectorConfig(_objConfig.back().config, srtexp);
+            LoadSrtExpCollectorConfig(&(_objConfig.back().config), srtexp);
         }
     }
 
@@ -92,8 +95,7 @@ std::string SrtExpConfig::GetServerIp(const std::string& exporterName) {
     SrtExpObjConfig *config = FindSrtExpObjConfig(exporterName);
     if (config && !(config->ip.empty())) {
         return config->ip;
-    }
-    else {
+    } else {
         return _globalConfig.ip;
     }
 }
@@ -102,8 +104,7 @@ int SrtExpConfig::GetServerPort(const std::string& exporterName) {
     SrtExpObjConfig *config = FindSrtExpObjConfig(exporterName);
     if (config && (config->port)) {
         return config->port;
-    }
-    else {
+    } else {
         for (int i = _globalConfig.portMin; i <= _globalConfig.portMax; i++) {
             if (IsPortAvailable(_globalConfig.ip, i)) {
                 return i;
@@ -113,27 +114,28 @@ int SrtExpConfig::GetServerPort(const std::string& exporterName) {
     }
 }
 
-SrtExpCollectorMode SrtExpConfig::GetCollectorMode(const std::string& exporterName) {
+SrtExpCollectorMode SrtExpConfig::GetCollectorMode(
+    const std::string& exporterName) {
     SrtExpObjConfig *config = FindSrtExpObjConfig(exporterName);
     if (config) {
         return config->config.collectorMode;
-    }
-    else {
+    } else {
         return _globalConfig.config.collectorMode;
     }
 }
 
-SrtExpCollectorConfig& SrtExpConfig::GetSrtExpCollectorConfig(const std::string& exporterName) {
+SrtExpCollectorConfig& SrtExpConfig::GetSrtExpCollectorConfig(
+    const std::string& exporterName) {
     SrtExpObjConfig *config = FindSrtExpObjConfig(exporterName);
     if (config) {
         return config->config;
-    }
-    else {
+    } else {
         return _globalConfig.config;
     }
 }
 
-SrtExpObjConfig *SrtExpConfig::FindSrtExpObjConfig(const std::string& exporterName) {
+SrtExpObjConfig *SrtExpConfig::FindSrtExpObjConfig(
+    const std::string& exporterName) {
     logger::SrtLog_Debug(__FUNCTION__);
     logger::SrtLog_Debug(exporterName);
     for (auto &cfg : _objConfig) {
@@ -150,102 +152,111 @@ void SrtExpConfig::DumpConfig() {
     logger::SrtLog_Debug(__FUNCTION__);
 
     logger::SrtLog_Debug("global:");
-    logger::SrtLog_Debug("  ip: " + _globalConfig.ip + "     port: " + std::to_string(_globalConfig.portMin) + "~" + std::to_string(_globalConfig.portMax));
+    logger::SrtLog_Debug("  ip: " + _globalConfig.ip + "     port: "
+                         + std::to_string(_globalConfig.portMin) + "~"
+                         + std::to_string(_globalConfig.portMax));
     DumpSrtExpCollectorConfig(_globalConfig.config);
 
     logger::SrtLog_Debug("srt_exporters:");
     for (auto &cfg : _objConfig) {
         logger::SrtLog_Debug("- name: " + cfg.name);
-        logger::SrtLog_Debug("  ip: " + cfg.ip + "     port: " + std::to_string(cfg.port));
+        logger::SrtLog_Debug("  ip: " + cfg.ip + "     port: "
+                             + std::to_string(cfg.port));
         DumpSrtExpCollectorConfig(cfg.config);
     }
 }
 
-void SrtExpConfig::LoadDefaultConfig(SrtExpGlobalConfig &cfg) {
-    cfg.ip = std::string("0.0.0.0");
-    cfg.portMin = 9901;
-    cfg.portMax = 10028;
-    LoadDefaultSrtExpCollectorConfig(cfg.config);
+void SrtExpConfig::LoadDefaultConfig(SrtExpGlobalConfig *cfg) {
+    cfg->ip = std::string("0.0.0.0");
+    cfg->portMin = 9901;
+    cfg->portMax = 10028;
+    LoadDefaultSrtExpCollectorConfig(&(cfg->config));
 }
 
-void SrtExpConfig::LoadDefaultSrtExpCollectorConfig(SrtExpCollectorConfig &cfg) {
-    cfg.collectorMode = SrtExpCollectorMode::COLLECT_ON_REQUEST;
-    cfg.filterMode = SrtExpFilterMode::SRT_COMMON;
+void SrtExpConfig::LoadDefaultSrtExpCollectorConfig(
+    SrtExpCollectorConfig *cfg) {
+    cfg->collectorMode = SrtExpCollectorMode::COLLECT_ON_REQUEST;
+    cfg->filterMode = SrtExpFilterMode::SRT_COMMON;
     YAML::Node temp = YAML::Load(SRT_COMMON_VARLIST);
-    cfg.varList.clear();
+    cfg->varList.clear();
     for (auto tmp : temp) {
-        cfg.varList.push_back(tmp.as<std::string>());
+        cfg->varList.push_back(tmp.as<std::string>());
     }
-    cfg.labelList.clear();
+    cfg->labelList.clear();
 }
 
-void SrtExpConfig::LoadSrtExpCollectorConfig(SrtExpCollectorConfig &cfg, const YAML::Node &config) {
+void SrtExpConfig::LoadSrtExpCollectorConfig(SrtExpCollectorConfig *cfg,
+                                             const YAML::Node &config) {
     if (config["collector_mode"]) {
         std::string str = config["collector_mode"].as<std::string>();
         if (str == "collect_on_request") {
-            cfg.collectorMode = SrtExpCollectorMode::COLLECT_ON_REQUEST;
-        }
-        else {
+            cfg->collectorMode = SrtExpCollectorMode::COLLECT_ON_REQUEST;
+        } else {
             logger::SrtLog_Error("Method not implemented yet.");
-            cfg.collectorMode = SrtExpCollectorMode::COLLECT_ON_REQUEST;
+            cfg->collectorMode = SrtExpCollectorMode::COLLECT_ON_REQUEST;
         }
     }
 
     if (config["filter"]) {
         logger::SrtLog_Debug("Filter block found.");
         if (config["filter"]["filter_mode"]) {
-            cfg.varList.clear();
-            std::string str = config["filter"]["filter_mode"].as<std::string>();
+            cfg->varList.clear();
+            std::string str
+                = config["filter"]["filter_mode"].as<std::string>();
             logger::SrtLog_Debug(str);
             if (str == "whitelist") {
-                cfg.filterMode = SrtExpFilterMode::WHITELIST;
+                cfg->filterMode = SrtExpFilterMode::WHITELIST;
                 if (config["filter"]["whitelist"]) {
                     for (auto var : config["filter"]["whitelist"]) {
-                        cfg.varList.push_back(var.as<std::string>());
+                        cfg->varList.push_back(var.as<std::string>());
                     }
                 }
-            }
-            else if (str == "blacklist") {
-                cfg.filterMode = SrtExpFilterMode::BLACKLIST;
+            } else if (str == "blacklist") {
+                cfg->filterMode = SrtExpFilterMode::BLACKLIST;
                 if (config["filter"]["blacklist"]) {
                     for (auto var : config["filter"]["blacklist"]) {
-                        cfg.varList.push_back(var.as<std::string>());
+                        cfg->varList.push_back(var.as<std::string>());
                     }
                 }
-            }
-            else if (str == "srt_source") {
-                cfg.filterMode = SrtExpFilterMode::SRT_SOURCE;
+            } else if (str == "srt_source") {
+                cfg->filterMode = SrtExpFilterMode::SRT_SOURCE;
                 YAML::Node temp = YAML::Load(SRT_SOURCE_VARLIST);
                 for (auto tmp : temp) {
-                    cfg.varList.push_back(tmp.as<std::string>());
+                    cfg->varList.push_back(tmp.as<std::string>());
                 }
-            }
-            else if (str == "srt_destination") {
-                cfg.filterMode = SrtExpFilterMode::SRT_DESTINATION;
+            } else if (str == "srt_destination") {
+                cfg->filterMode = SrtExpFilterMode::SRT_DESTINATION;
                 YAML::Node temp = YAML::Load(SRT_DESTINATION_VARLIST);
                 for (auto tmp : temp) {
-                    cfg.varList.push_back(tmp.as<std::string>());
+                    cfg->varList.push_back(tmp.as<std::string>());
                 }
             }
         }
     }
 
     if (config["labels"]) {
-        cfg.labelList.clear();
+        cfg->labelList.clear();
         for (auto label : config["labels"]) {
-            cfg.labelList.emplace_back(SrtExpLabel({label["name"].as<std::string>(), label["value"].as<std::string>()}));
+            cfg->labelList.emplace_back(
+                SrtExpLabel({label["name"].as<std::string>(),
+                             label["value"].as<std::string>()}));
         }
     }
 }
 
-void SrtExpConfig::DumpSrtExpCollectorConfig(SrtExpCollectorConfig &cfg) {
-    logger::SrtLog_Debug("  collector_mode: " + std::to_string(int(cfg.collectorMode)) + "     filter_mode: " + std::to_string(int(cfg.filterMode)));
+void SrtExpConfig::DumpSrtExpCollectorConfig(
+    const SrtExpCollectorConfig &cfg) {
+    logger::SrtLog_Debug("  collector_mode: "
+        + std::to_string(static_cast<int>(cfg.collectorMode))
+        + "     filter_mode: "
+        + std::to_string(static_cast<int>(cfg.filterMode)));
     for (auto &var : cfg.varList) {
         logger::SrtLog_Debug("  - " + var);
     }
     logger::SrtLog_Debug("  labels: ");
     for (auto &label : cfg.labelList) {
-        logger::SrtLog_Debug("  - name: " + label.name + "     value: " + label.value);
+        logger::SrtLog_Debug("  - name: " + label.name
+                             + "     value: " + label.value);
     }
 }
 
@@ -256,13 +267,14 @@ int SrtExpConfig::IsPortAvailable(std::string ip, int port) {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == -1) {
         return 0;
-    }    
+    }
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     ret = inet_pton(AF_INET, ip.c_str(), &addr.sin_addr);
     if (ret == 0 || ret == -1) {
-        logger::SrtLog_Error("Wrong ip address input or available address family not found.");
+        logger::SrtLog_Error("Wrong ip address input or available address
+                             family not found.");
         close(fd);
         return 0;
     }
@@ -271,10 +283,9 @@ int SrtExpConfig::IsPortAvailable(std::string ip, int port) {
     close(fd);
     if (ret) {
         return 0;
-    }
-    else {
+    } else {
         return 1;
     }
 }
 
-} //namespace srt_exporter
+}  // namespace srt_exporter

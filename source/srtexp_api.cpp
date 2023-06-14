@@ -8,7 +8,7 @@
  *
  */
 
-#include "srtexp_api.hpp"
+#include "export/srtexp_api.hpp"
 
 #include <cstdlib>
 #include <cstring>
@@ -17,9 +17,9 @@
 #include <stdexcept>
 #include <vector>
 
-#include "srtexp_exporter.hpp"
-#include "srtexp_config.hpp"
-#include "srtexp_logger.hpp"
+#include "include/srtexp_exporter.hpp"
+#include "include/srtexp_config.hpp"
+#include "include/srtexp_logger.hpp"
 
 
 namespace srt_exporter {
@@ -35,7 +35,8 @@ using namespace srt_exporter;
 // local
 static std::mutex api_lock;
 
-static std::shared_ptr<SrtExporter> FindSrtExporter(const char *exporterName, int *id);
+static std::shared_ptr<SrtExporter> FindSrtExporter(const char *exporterName,
+                                                    int *id);
 static std::shared_ptr<SrtExporter> FindSrtExporter(int id);
 static void DeleteSrtExporter(int id);
 
@@ -48,8 +49,7 @@ SrtExpRet srtexp_init(const char *configFile) {
     try {
         if (configFile) {
             srtExpConfig->LoadConfigFile(std::string(configFile));
-        }
-        else {
+        } else {
             srtExpConfig->LoadConfigFile(std::string(DEFAULT_CONFIG_FILE));
         }
     }
@@ -84,7 +84,8 @@ SrtExpRet srtexp_start(const char *exporterName, int *id) {
         srtexp_stop(exporterName);
     }
 
-    srtExp.push_back(std::make_shared<SrtExporter>(std::string(exporterName), count));
+    srtExp.push_back(std::make_shared<SrtExporter>(std::string(exporterName),
+                                                   count));
     try {
         srtExp.back()->InitSrtExporter();
     }
@@ -106,8 +107,7 @@ SrtExpRet srtexp_stop(const char *exporterName) {
     if (p) {
         DeleteSrtExporter(id);
         return SrtExpRet::SRT_EXP_SUCCESS;
-    }
-    else {
+    } else {
         return SrtExpRet::SRT_EXP_OBJECT_NOT_FOUND;
     }
 }
@@ -120,13 +120,13 @@ SrtExpRet srtexp_stop(int id) {
     if (p) {
         DeleteSrtExporter(id);
         return SrtExpRet::SRT_EXP_SUCCESS;
-    }
-    else {
+    } else {
         return SrtExpRet::SRT_EXP_OBJECT_NOT_FOUND;
     }
 }
 
-SrtExpRet srtexp_label_register(const char *name, const char *value, const char *var, int id) {
+SrtExpRet srtexp_label_register(const char *name, const char *value,
+                                const char *var, int id) {
     logger::SrtLog_Notice(__FUNCTION__);
     std::lock_guard<std::mutex> lock(api_lock);
 
@@ -154,7 +154,8 @@ SrtExpRet srtexp_set_log_dest(SrtExpLogDestination dest) {
     logger::SrtLog_Notice(__FUNCTION__);
     std::lock_guard<std::mutex> lock(api_lock);
 
-    if (dest == SrtExpLogDestination::SRT_EXP_SYSLOG || dest == SrtExpLogDestination::SRT_EXP_STDERR) {
+    if (dest == SrtExpLogDestination::SRT_EXP_SYSLOG
+        || dest == SrtExpLogDestination::SRT_EXP_STDERR) {
         logger::SrtLog_SetDestination(dest);
 
         return SrtExpRet::SRT_EXP_SUCCESS;
@@ -177,7 +178,8 @@ SrtExpRet srtexp_set_syslog_level(int level) {
 }
 
 // utility
-static std::shared_ptr<SrtExporter> FindSrtExporter(const char *exporterName, int *id) {
+static std::shared_ptr<SrtExporter> FindSrtExporter(const char *exporterName,
+                                                    int *id) {
     if (exporterName) {
         for (std::shared_ptr<SrtExporter> p : srtExp) {
             if (p->CompareExporterName(exporterName)) {
@@ -209,5 +211,3 @@ static void DeleteSrtExporter(int id) {
         pos++;
     }
 }
-
-

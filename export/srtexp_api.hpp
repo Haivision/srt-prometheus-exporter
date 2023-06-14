@@ -14,7 +14,7 @@
 
 #include <srt/srt.h>
 
-#include "srtexp_define.hpp"
+#include "export/srtexp_define.hpp"
 
 /**
  * SRT Exporter library initialization, load configuration to memory
@@ -66,7 +66,8 @@ SrtExpRet srtexp_stop(const char *exporterName);
  *          IN  id:             identity to allocate SRT Exporter object
  * @return  SrtExpRet::SRT_EXP_SUCCESS on success
  */
-SrtExpRet srtexp_label_register(const char *name, const char *value, const char *var, int id);
+SrtExpRet srtexp_label_register(const char *name, const char *value,
+                                const char *var, int id);
 
 /**
  * Register SRT sockets to be tracked by one SRT Exporter object

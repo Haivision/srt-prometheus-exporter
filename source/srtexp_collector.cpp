@@ -8,24 +8,26 @@
  *
  */
 
-#include "srtexp_collector.hpp"
+#include "include/srtexp_collector.hpp"
 
-#include "srtexp_config.hpp"
-#include "srtexp_logger.hpp"
+#include "include/srtexp_config.hpp"
+#include "include/srtexp_logger.hpp"
 
 
 namespace srt_exporter {
 
 extern std::shared_ptr<SrtExpConfig> srtExpConfig;
 
-using namespace prometheus;
+// using namespace prometheus;
 
 // SrtExpCollector
-SrtExpCollector::SrtExpCollector(std::shared_ptr<SrtExporter> srtExp) : _srtExp(srtExp) {
+SrtExpCollector::SrtExpCollector(std::shared_ptr<SrtExporter> srtExp)
+    : _srtExp(srtExp) {
     LoadFilterFromConfig();
 }
 
-SrtExpRet SrtExpCollector::LabelRegister(const char *name, const char *value, const char *var) {
+SrtExpRet SrtExpCollector::LabelRegister(const char *name, const char *value,
+                                         const char *var) {
     logger::SrtLog_Debug(__FUNCTION__);
     bool found = false;
 
@@ -35,10 +37,12 @@ SrtExpRet SrtExpCollector::LabelRegister(const char *name, const char *value, co
     }
 
     // If the input variable name is NULL, add the label to common label list.
-    // If the input variable name is found in filtered entries, add the label to the variable's private label list.
+    // If the input variable name is found in filtered entries, add the label
+    // to the variable's private label list.
     std::vector<MetricLabel> *labelList = &(*_commonLabel);
     if (var) {
-        logger::SrtLog_Notice("Allocating private label list. variable: " + std::string(var));
+        logger::SrtLog_Notice("Allocating private label list. variable: "
+                              + std::string(var));
         for (auto &data : (*_filteredData)) {
             if (data.name == var) {
                 logger::SrtLog_Notice("Variable found.");
@@ -56,13 +60,14 @@ SrtExpRet SrtExpCollector::LabelRegister(const char *name, const char *value, co
     found = false;
     for (auto label = labelList->begin(); label != labelList->end(); label++) {
         if (label->name == name) {
-            logger::SrtLog_Notice("Existing label found. name: " + std::string(name));
+            logger::SrtLog_Notice("Existing label found. name: "
+                                  + std::string(name));
             found = true;
             if (value) {
-                logger::SrtLog_Notice("Update label value. value: " + std::string(value));
+                logger::SrtLog_Notice("Update label value. value: "
+                                      + std::string(value));
                 label->value = std::string(value);
-            }
-            else {
+            } else {
                 logger::SrtLog_Notice("Remove label.");
                 labelList->erase(label);
             }
@@ -70,8 +75,10 @@ SrtExpRet SrtExpCollector::LabelRegister(const char *name, const char *value, co
         }
     }
     if ((found == false) && (value)) {
-        logger::SrtLog_Notice("Add new label. name: " + std::string(name) + " value: " + std::string(value));
-        labelList->push_back(MetricLabel({std::string(name), std::string(value)}));
+        logger::SrtLog_Notice("Add new label. name: " + std::string(name)
+                              + " value: " + std::string(value));
+        labelList->push_back(
+            MetricLabel({std::string(name), std::string(value)}));
     }
 
     return SrtExpRet::SRT_EXP_SUCCESS;
@@ -83,16 +90,19 @@ SrtExpRet SrtExpCollector::SrtSockRegister(SRTSOCKET *sock, int sockNum) {
 
     if (sock) {
         for (int i = 0; i < sockNum; i++) {
-            logger::SrtLog_Debug("srt socket adding: " + std::to_string(sock[i]));
+            logger::SrtLog_Debug("srt socket adding: "
+                                 + std::to_string(sock[i]));
             _srtSock->push_back(sock[i]);
         }
     }
-    logger::SrtLog_Debug("srt socket num: " + std::to_string(_srtSock->size()));
+    logger::SrtLog_Debug("srt socket num: "
+                         + std::to_string(_srtSock->size()));
 
     return SrtExpRet::SRT_EXP_SUCCESS;
 }
 
-void SrtExpCollector::ValueToMetricFamily(const SrtDataMapper *map, MetricFamily *metric, SRTSOCKET sock) const {
+void SrtExpCollector::ValueToMetricFamily(
+    const SrtDataMapper *map, MetricFamily *metric, SRTSOCKET sock) const {
     logger::SrtLog_Debug(__FUNCTION__);
     logger::SrtLog_Debug("Calculate number of labels.");
     int labelNum = 1 + map->label.size() + (*_commonLabel).size();
@@ -101,17 +111,17 @@ void SrtExpCollector::ValueToMetricFamily(const SrtDataMapper *map, MetricFamily
     double valueDouble = 0;
     switch (map->structType) {
         case SrtDataValueType::SRT_INT:
-            valueDouble = *(int *)(map->data);
+            valueDouble = *reinterpret_cast<int *>(map->data);
             break;
         case SrtDataValueType::SRT_LONG_LONG:
-            valueDouble = *(long long *)(map->data);
+            valueDouble = *reinterpret_cast<int64_t *>(map->data);
             break;
         case SrtDataValueType::SRT_UNSIGNED_LONG_LONG:
-            valueDouble = *(unsigned long long *)(map->data);
+            valueDouble = *reinterpret_cast<uint64_t *>(map->data);
             break;
         case SrtDataValueType::SRT_DOUBLE:
         default:
-            valueDouble = *(double *)(map->data);
+            valueDouble = *reinterpret_cast<double *>(map->data);
     }
 
     logger::SrtLog_Debug("Fill metric.");
@@ -127,8 +137,10 @@ void SrtExpCollector::ValueToMetricFamily(const SrtDataMapper *map, MetricFamily
         metric->metric[0].label[i + 1].value = map->label[i].value;
     }
     for (int i = 0; i < (*_commonLabel).size(); i++) {
-        metric->metric[0].label[i + map->label.size() + 1].name = (*_commonLabel)[i].name;
-        metric->metric[0].label[i + map->label.size() + 1].value = (*_commonLabel)[i].value;
+        metric->metric[0].label[i + map->label.size() + 1].name
+            = (*_commonLabel)[i].name;
+        metric->metric[0].label[i + map->label.size() + 1].value
+            = (*_commonLabel)[i].value;
     }
     switch (metric->type) {
         case MetricType::Gauge:
@@ -149,18 +161,22 @@ void SrtExpCollector::ValueToMetricFamily(const SrtDataMapper *map, MetricFamily
 
 void SrtExpCollector::LoadFilterFromConfig() {
     logger::SrtLog_Debug(__FUNCTION__);
-    std::string exporterName =_srtExp->GetExporterName();
+    std::string exporterName = _srtExp->GetExporterName();
     SRT_TRACEBSTATS mold = {0};
-    SrtDataMapper srtDataMapper[MAX_SRT_DATA_MAP_ENTRY_NUM] = SRT_DATA_MAP_INITIALIZER;
-    SrtExpCollectorConfig config = srtExpConfig->GetSrtExpCollectorConfig(exporterName);
+    SrtDataMapper srtDataMapper[MAX_SRT_DATA_MAP_ENTRY_NUM]
+        = SRT_DATA_MAP_INITIALIZER;
+    SrtExpCollectorConfig config
+        = srtExpConfig->GetSrtExpCollectorConfig(exporterName);
 
     for (int i = 0; i < MAX_SRT_DATA_MAP_ENTRY_NUM; i++) {
         if (srtDataMapper[i].name.empty()) {
             break;
         }
         for (auto &var : config.varList) {
-            if (((config.filterMode == SrtExpFilterMode::WHITELIST) && (srtDataMapper[i].name == var))
-                || ((config.filterMode != SrtExpFilterMode::WHITELIST) && (srtDataMapper[i].name != var))) {
+            if (((config.filterMode == SrtExpFilterMode::WHITELIST)
+                && (srtDataMapper[i].name == var))
+                || ((config.filterMode != SrtExpFilterMode::WHITELIST)
+                && (srtDataMapper[i].name != var))) {
                 _filteredData->push_back(srtDataMapper[i]);
             }
         }
@@ -175,7 +191,8 @@ void SrtExpCollector::LoadFilterFromConfig() {
 void SrtExpCollector::DumpFilter() {
     logger::SrtLog_Debug(__FUNCTION__);
 
-    logger::SrtLog_Notice("Filtered data size: " + std::to_string(_filteredData->size()));
+    logger::SrtLog_Notice("Filtered data size: "
+                          + std::to_string(_filteredData->size()));
     for (auto &data : (*_filteredData)) {
         logger::SrtLog_Debug("- name: " + data.name);
     }
@@ -192,7 +209,8 @@ std::vector<MetricFamily> SrtExpCollectorModeOne::Collect() const {
         for (auto &sock : (*_srtSock)) {
             int ret;
             SRT_TRACEBSTATS stats;
-            logger::SrtLog_Debug("calling srt_bstats: " + std::to_string(sock) + " from: " + std::to_string(pthread_self()));
+            logger::SrtLog_Debug("calling srt_bstats: " + std::to_string(sock)
+                + " from: " + std::to_string(pthread_self()));
             ret = srt_bstats(sock, &stats, 0);
             if (ret < 0) {
                 continue;
@@ -214,17 +232,25 @@ void SrtExpCollectorModeOne::DataAdaptor(SRT_TRACEBSTATS *stats) const {
         map = &data;
         switch (map->structType) {
             case SrtDataValueType::SRT_INT:
-                *(int *)(map->data) = *(int *)((char *)stats + map->offset);
+                *reinterpret_cast<int *>(map->data)
+                    = *reinterpret_cast<int *>(
+                        reinterpret_cast<char *>stats + map->offset);
                 break;
             case SrtDataValueType::SRT_LONG_LONG:
-                *(long long *)(map->data) = *(long long *)((char *)stats + map->offset);
+                *reinterpret_cast<int64_t *>(map->data)
+                    = *reinterpret_cast<int64_t *>(
+                        reinterpret_cast<char *>stats + map->offset);
                 break;
             case SrtDataValueType::SRT_UNSIGNED_LONG_LONG:
-                *(unsigned long long *)(map->data) = *(unsigned long long *)((char *)stats + map->offset);
+                *reinterpret_cast<uint64_t *>(map->data)
+                    = *reinterpret_cast<uint64_t *>(
+                        reinterpret_cast<char *>stats + map->offset);
                 break;
             case SrtDataValueType::SRT_DOUBLE:
             default:
-                *(double *)(map->data) = *(double *)((char *)stats + map->offset);
+                *reinterpret_cast<double *>(map->data)
+                    = *reinterpret_cast<double *>(
+                        reinterpret_cast<char *>stats + map->offset);
         }
     }
 }
@@ -238,25 +264,26 @@ void SrtExpCollectorModeOne::MetricTranslation(SRTSOCKET sock) const {
     for (auto &data : (*_filteredData)) {
         map = &data;
         _translated->resize(j + 1);
-        ValueToMetricFamily((const SrtDataMapper *)map, &(*_translated)[j], sock);
+        ValueToMetricFamily((const SrtDataMapper *)map,
+                            &(*_translated)[j], sock);
         j++;
         switch (map->structType) {
             case SrtDataValueType::SRT_INT:
                 offset += sizeof(int);
                 break;
             case SrtDataValueType::SRT_LONG_LONG:
-                offset += sizeof(long long);
+                offset += sizeof(int64_t);
                 break;
             case SrtDataValueType::SRT_UNSIGNED_LONG_LONG:
-                offset += sizeof(unsigned long long);
+                offset += sizeof(uint64_t);
                 break;
             case SrtDataValueType::SRT_DOUBLE:
             default:
                 offset += sizeof(double);
         }
-        logger::SrtLog_Debug(std::string(map->name) + " offset: " + std::to_string(offset));
+        logger::SrtLog_Debug(std::string(map->name) + " offset: "
+                             + std::to_string(offset));
     }
 }
 
-} //namespace srt_exporter
-
+}  // namespace srt_exporter

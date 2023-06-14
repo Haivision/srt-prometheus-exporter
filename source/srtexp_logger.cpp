@@ -8,11 +8,12 @@
  *
  */
 
-#include "srtexp_logger.hpp"
+#include "include/srtexp_logger.hpp"
 
 namespace srt_exporter {
 
-static SrtExpLogDestination srtExpLogDestination = SrtExpLogDestination::SRT_EXP_SYSLOG;
+static SrtExpLogDestination srtExpLogDestination
+    = SrtExpLogDestination::SRT_EXP_SYSLOG;
 static int syslogLevel = LOG_NOTICE;
 
 void logger::SrtLog_SetDestination(SrtExpLogDestination dest) {
@@ -80,4 +81,4 @@ void logger::SrtLog_Debug(const std::string msg)  {
     }
 }
 
-};
+}  // namespace srt_exporter
