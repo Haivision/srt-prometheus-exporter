@@ -25,9 +25,12 @@
 
 pip install cpplint
 
-pwd
+output1=$(cpplint --recursive --extensions=hpp,cpp,h,c --exclude=include/srtexp_collector.hpp --quiet ./)
 
-cpplint --recursive --extensions=hpp,cpp,h,c --exclude=include/srtexp_collector.hpp --quiet ./
-cpplint --linelength=320 --quiet ./include/srtexp_collector.hpp
+# definition of SRT_DATA_MAP_INITIALIZER in srtexp_collector.hpp needs a long linelength, so handle it separately.
+output2=$(cpplint --linelength=320 --quiet ./include/srtexp_collector.hpp)
 
-exit 0
+if [[ -z "$output1" && -z "$output2" ]]; then
+	exit 0
+else
+	exit -1
