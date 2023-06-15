@@ -34,3 +34,4 @@ if [[ -z "$output1" && -z "$output2" ]]; then
 	exit 0
 else
 	exit -1
+fi
