@@ -23,7 +23,7 @@
 # Main #
 ########
 
-cpplint --recursive --extensions=hpp,cpp,h,c --exclude=include/srtexp_collector.hpp ../
-cpplint --linelength=320 ../include/srtexp_collector.hpp
+cpplint --recursive --extensions=hpp,cpp,h,c --exclude=include/srtexp_collector.hpp --quiet ../
+cpplint --linelength=320 --quiet ../include/srtexp_collector.hpp
 
 exit 0
