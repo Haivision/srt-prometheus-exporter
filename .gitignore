@@ -1,0 +1,5 @@
+.vscode
+*.o
+*.so
+sample_srtcaller
+sample_srtlistener

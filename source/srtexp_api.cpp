@@ -33,8 +33,8 @@ std::shared_ptr<SrtExpConfig> srtExpConfig = nullptr;
 // local
 static std::mutex api_lock;
 
-static std::shared_ptr<srt_exporter::SrtExporter> FindSrtExporter(const char *exporterName,
-                                                    int *id);
+static std::shared_ptr<srt_exporter::SrtExporter> FindSrtExporter(
+    const char *exporterName, int *id);
 static std::shared_ptr<srt_exporter::SrtExporter> FindSrtExporter(int id);
 static void DeleteSrtExporter(int id);
 
@@ -42,17 +42,21 @@ static void DeleteSrtExporter(int id);
 SrtExpRet srtexp_init(const char *configFile) {
     srt_exporter::logger::SrtLog_Notice(__FUNCTION__);
 
-    srt_exporter::srtExpConfig = std::make_shared<srt_exporter::SrtExpConfig>();
+    srt_exporter::srtExpConfig
+        = std::make_shared<srt_exporter::SrtExpConfig>();
 
     try {
         if (configFile) {
-            srt_exporter::srtExpConfig->LoadConfigFile(std::string(configFile));
+            srt_exporter::srtExpConfig
+                ->LoadConfigFile(std::string(configFile));
         } else {
-            srt_exporter::srtExpConfig->LoadConfigFile(std::string(DEFAULT_CONFIG_FILE));
+            srt_exporter::srtExpConfig
+                ->LoadConfigFile(std::string(DEFAULT_CONFIG_FILE));
         }
     }
     catch (SrtExpRet &error) {
-        srt_exporter::logger::SrtLog_Error("Wrong with config file, using default config.");
+        srt_exporter::logger::SrtLog_Error(
+            "Wrong with config file, using default config.");
         return error;
     }
 
@@ -77,13 +81,14 @@ SrtExpRet srtexp_start(const char *exporterName, int *id) {
     std::lock_guard<std::mutex> lock(api_lock);
     count++;
 
-    std::shared_ptr<srt_exporter::SrtExporter> p = FindSrtExporter(exporterName, id);
+    std::shared_ptr<srt_exporter::SrtExporter> p
+        = FindSrtExporter(exporterName, id);
     if (p) {
         srtexp_stop(exporterName);
     }
 
-    srt_exporter::srtExp.push_back(std::make_shared<srt_exporter::SrtExporter>(std::string(exporterName),
-                                                   count));
+    srt_exporter::srtExp.push_back(std::make_shared<srt_exporter::SrtExporter>(
+        std::string(exporterName), count));
     try {
         srt_exporter::srtExp.back()->InitSrtExporter();
     }
@@ -101,7 +106,8 @@ SrtExpRet srtexp_stop(const char *exporterName) {
     int id = -1;
     std::lock_guard<std::mutex> lock(api_lock);
 
-    std::shared_ptr<srt_exporter::SrtExporter> p = FindSrtExporter(exporterName, &id);
+    std::shared_ptr<srt_exporter::SrtExporter> p
+        = FindSrtExporter(exporterName, &id);
     if (p) {
         DeleteSrtExporter(id);
         return SrtExpRet::SRT_EXP_SUCCESS;
@@ -176,10 +182,11 @@ SrtExpRet srtexp_set_syslog_level(int level) {
 }
 
 // utility
-static std::shared_ptr<srt_exporter::SrtExporter> FindSrtExporter(const char *exporterName,
-                                                    int *id) {
+static std::shared_ptr<srt_exporter::SrtExporter> FindSrtExporter(
+    const char *exporterName, int *id) {
     if (exporterName) {
-        for (std::shared_ptr<srt_exporter::SrtExporter> p : srt_exporter::srtExp) {
+        for (std::shared_ptr<srt_exporter::SrtExporter> p
+            : srt_exporter::srtExp) {
             if (p->CompareExporterName(exporterName)) {
                 *id = p->GetId();
                 return p;
