@@ -158,8 +158,8 @@ class SrtExpCollector : public prometheus::Collectable {
  protected:
     void ClearTranslated() const {_translated->clear();}
     // translate SRT data to metrics to be sent
-    void ValueToMetricFamily(const SrtDataMapper *map, prometheus::MetricFamily *metric,
-                             SRTSOCKET sock) const;
+    void ValueToMetricFamily(const SrtDataMapper *map,
+        prometheus::MetricFamily *metric, SRTSOCKET sock) const;
     void LoadFilterFromConfig();
     void DumpFilter();
 

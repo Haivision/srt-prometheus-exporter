@@ -13,7 +13,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <memory>
-#include <mutex>
+#include <mutex> // NOLINT
 #include <stdexcept>
 #include <vector>
 

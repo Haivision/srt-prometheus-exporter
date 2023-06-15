@@ -37,21 +37,9 @@ enum class SrtExpFilterMode {
 };
 
 // Default static variable list for preset filter modes.
-#define SRT_SOURCE_VARLIST "['pktSentTotal', 'pktSndLossTotal', 'pktSent', \
-    'pktSndLoss', 'pktRetrans', 'pktRecvACK', 'pktRecvNAK', 'byteSent', \
-    'byteRetrans', 'byteSndDrop', 'pktSndDrop', 'mbpsSendRate', \
-    'usSndDuration', 'msSndTsbPdDelay', 'mbpsBandwidth', 'msRTT']"
-#define SRT_DESTINATION_VARLIST "['pktRecvTotal', 'pktRcvLossTotal', \
-    'pktRecv', 'pktRcvLoss', 'pktRcvRetrans', 'pktSentACK', 'pktSentNAK', \
-    'byteRecv', 'byteRcvDrop', 'pktRcvDrop', 'mbpsRecvRate', 'usSndDuration', \
-    'msSndTsbPdDelay', 'mbpsBandwidth', 'msRTT']"
-#define SRT_COMMON_VARLIST "['pktSentTotal', 'pktSndLossTotal', 'pktSent', \
-    'pktSndLoss', 'pktRetrans', 'pktRecvACK', 'pktRecvNAK', 'byteSent', \
-    'byteRetrans', 'byteSndDrop', 'pktSndDrop', 'mbpsSendRate', \
-    'pktRecvTotal', 'pktRcvLossTotal', 'pktRecv', 'pktRcvLoss', \
-    'pktRcvRetrans', 'pktSentACK', 'pktSentNAK', 'byteRecv', 'byteRcvDrop', \
-    'pktRcvDrop', 'mbpsRecvRate', 'usSndDuration', 'msSndTsbPdDelay', \
-    'mbpsBandwidth', 'msRTT']"
+#define SRT_SOURCE_VARLIST "['pktSentTotal', 'pktSndLossTotal', 'pktSent', 'pktSndLoss', 'pktRetrans', 'pktRecvACK', 'pktRecvNAK', 'byteSent', 'byteRetrans', 'byteSndDrop', 'pktSndDrop', 'mbpsSendRate', 'usSndDuration', 'msSndTsbPdDelay', 'mbpsBandwidth', 'msRTT']"  // NOLINT
+#define SRT_DESTINATION_VARLIST "['pktRecvTotal', 'pktRcvLossTotal', 'pktRecv', 'pktRcvLoss', 'pktRcvRetrans', 'pktSentACK', 'pktSentNAK', 'byteRecv', 'byteRcvDrop', 'pktRcvDrop', 'mbpsRecvRate', 'usSndDuration', 'msSndTsbPdDelay', 'mbpsBandwidth', 'msRTT']"  // NOLINT
+#define SRT_COMMON_VARLIST "['pktSentTotal', 'pktSndLossTotal', 'pktSent', 'pktSndLoss', 'pktRetrans', 'pktRecvACK', 'pktRecvNAK', 'byteSent', 'byteRetrans', 'byteSndDrop', 'pktSndDrop', 'mbpsSendRate', 'pktRecvTotal', 'pktRcvLossTotal', 'pktRecv', 'pktRcvLoss', 'pktRcvRetrans', 'pktSentACK', 'pktSentNAK', 'byteRecv', 'byteRcvDrop', 'pktRcvDrop', 'mbpsRecvRate', 'usSndDuration', 'msSndTsbPdDelay', 'mbpsBandwidth', 'msRTT']"  // NOLINT
 
 typedef struct _SrtExpLabel {
     std::string name;
