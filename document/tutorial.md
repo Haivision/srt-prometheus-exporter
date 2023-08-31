@@ -53,7 +53,7 @@ It tries to connect port `8888` with this SRT socket. Once connection is accepte
 
 Access `http://127.0.0.1:10027/metrics` from a browser to trigger an http request to it manually.
 
-<img src="./images/sample_srt_source.png" alt="sample_srt_caller" width="400">
+<img src="./images/sample_srt_caller.png" alt="sample_srt_caller" width="400">
 
 
 ```bash
@@ -69,7 +69,7 @@ Its SRT Exporter object's name is `sample_srt_listener`.
 
 Access `http://127.0.0.1:10028/metrics` from a browser to trigger an http request to it manually.
 
-<img src="./images/sample_srt_destination.png" alt="sample_srt_listener" width="400">
+<img src="./images/sample_srt_listener.png" alt="sample_srt_listener" width="400">
 
 ### Start Prometheus
 
