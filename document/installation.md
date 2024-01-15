@@ -2,26 +2,39 @@
 
 ## Requirements / Dependency
 
-### System
+### Supported System
 
-It could be working the following versions or latter, but not recommended to be used except following specific versions since it does not verify with other versions.
-
-- Ubuntu: 20.04 Focal Fossa
-- [SRT v1.4.0](https://github.com/Haivision/srt/releases/tag/v1.4.0)
+- [Ubuntu 20.04 Focal Fossa](https://releases.ubuntu.com/focal/)
+- [Ubuntu 22.04 Jammy Jellyfish](https://releases.ubuntu.com/jammy/)
 
 ### Prerequisites
 
-The following packages are required to install.
+The following packages are required to install as common.
 
 ```bash
 apt update
 apt upgrade -y
-apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zlib1g-dev git libsrt-dev libyaml-cpp-dev
+apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zlib1g-dev git libyaml-cpp-dev
+```
+
+- Ubuntu 20.04
+
+```bash
+apt install -y libsrt-dev libsrt-doc
+```
+
+- Ubuntu 22.04
+
+```bash
+apt install -y libsrt-openssl-dev libsrt-doc
 ```
 
 ### Dependent Packages
 
 - [prometheus-cpp](https://github.com/jupp0r/prometheus-cpp) library
+
+  > [!NOTE]
+  > `prometheus-cpp` debian package is supported on ubuntu 23 or later. see more details for https://github.com/Haivision/srt-prometheus-exporter/issues/11.
 
   ```bash
   git clone https://github.com/jupp0r/prometheus-cpp
@@ -32,7 +45,7 @@ apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zl
   cd _build
   cmake .. -DBUILD_SHARED_LIBS=ON
   make -j 4
-  sudo make install
+  make install
   ```
 
   Check if the following libraries are installed as expectedly.
