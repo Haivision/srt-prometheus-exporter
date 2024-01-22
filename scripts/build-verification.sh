@@ -34,7 +34,15 @@ function install_prerequisites () {
     trap exit_trap ERR
     echo "[${FUNCNAME[0]}]: update and install dependent packages."
     apt update && apt upgrade -y
-    apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zlib1g-dev git libsrt-dev libyaml-cpp-dev libsrt-dev
+    apt install -y g++ curl cmake pkg-config libcurl4-openssl-dev build-essential zlib1g-dev git libyaml-cpp-dev
+    if [[ $(lsb_release -rs) == "20.04" ]]; then
+        apt install -y libsrt-dev libsrt-dev
+    elif [[ $(lsb_release -rs) == "22.04" ]]; then
+        apt install -y libsrt-openssl-dev libsrt-doc
+    else
+        echo "CI is running on unsupported platform, trying to install SRT libs with wildcard."
+        apt install -y libsrt-*
+    fi
     cd $there
 }
 
