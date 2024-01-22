@@ -52,9 +52,11 @@ apt install -y libsrt-openssl-dev libsrt-doc
 
   ```bash
   ls /usr/local/lib/libprometheus-cpp*
-  /usr/local/lib/libprometheus-cpp-core.so        /usr/local/lib/libprometheus-cpp-pull.so        /usr/local/lib/libprometheus-cpp-push.so
-  /usr/local/lib/libprometheus-cpp-core.so.1.1    /usr/local/lib/libprometheus-cpp-pull.so.1.1    /usr/local/lib/libprometheus-cpp-push.so.1.1
-  /usr/local/lib/libprometheus-cpp-core.so.1.1.0  /usr/local/lib/libprometheus-cpp-pull.so.1.1.0  /usr/local/lib/libprometheus-cpp-push.so.1.1.0
+  /usr/local/lib/libprometheus-cpp-core.so        /usr/local/lib/libprometheus-cpp-pull.so.1.2.0
+  /usr/local/lib/libprometheus-cpp-core.so.1.2    /usr/local/lib/libprometheus-cpp-push.so
+  /usr/local/lib/libprometheus-cpp-core.so.1.2.0  /usr/local/lib/libprometheus-cpp-push.so.1.2
+  /usr/local/lib/libprometheus-cpp-pull.so        /usr/local/lib/libprometheus-cpp-push.so.1.2.0
+  /usr/local/lib/libprometheus-cpp-pull.so.1.2
   ```
 
   Set `/usr/local/lib` to `LD_LIBRARY_PATH` environmental variable to avoid dynamic link error.
@@ -63,10 +65,17 @@ apt install -y libsrt-openssl-dev libsrt-doc
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
   ```
 
-- SRT library (If necessary)
+- SRT library version compatibility
 
-  The stable version can be installed with `apt install libsrt-dev` on `Ubuntu 20.04` version is `v1.4.0`.
-  **If SRT library is compiled from code, be sure that the code is reset to tag `v1.4.0`. Otherwise, srt_exporter library compiled would not work with installed SRT library on other devices. Make sure that SRT Exporter library is built and running based on the same version of SRT library.**  
+  ```bash
+  dpkg -l | grep libsrt
+  ii  libsrt-doc                 1.4.4-4                                 all          Secure Reliable Transport UDP streaming library (documentation)
+  ii  libsrt-openssl-dev:amd64   1.4.4-4                                 amd64        Secure Reliable Transport UDP streaming library (OpenSSL flavour development)
+  ii  libsrt1.4-openssl:amd64    1.4.4-4                                 amd64        Secure Reliable Transport UDP streaming library (OpenSSL flavour)
+  ```
+
+  > [!NOTE]
+  > **If SRT library is compiled from code, be sure that the code is aligned with tag `v1.4.X`. Otherwise, srt_exporter library would not get successfully compiled with installed SRT library.**
 
 ### Build and Install
 
@@ -74,7 +83,7 @@ apt install -y libsrt-openssl-dev libsrt-doc
 
   ```bash
   cd srt-prometheus-exporter
-  sudo make
+  make
   ```
 
   `libsrtexp.so` will be compiled and installed to `/usr/local/lib`, and related header files will be installed in `/usr/local/include/srtexp`.
@@ -83,5 +92,5 @@ apt install -y libsrt-openssl-dev libsrt-doc
 
   ```bash
   cd srt-prometheus-exporter
-  sudo make clean
+  make clean
   ```
