@@ -1,0 +1,27 @@
+# This is workflow to check coding style with cpplint
+name: check-coding-style
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  check-coding-style:
+
+    name: check-coding-style-${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v3
+    - name: Check coding style with cpplint
+      run: ./scripts/check-coding-style.sh

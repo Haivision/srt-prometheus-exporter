@@ -13,17 +13,18 @@
 #pragma once
 
 #include <sys/syslog.h>
+
 #include <iostream>
 #include <string>
 
-#include "srtexp_define.hpp"
+#include "export/srtexp_define.hpp"
 
 
 namespace srt_exporter {
 
 // class logger
 class logger {
-public:
+ public:
     static void SrtLog_SetDestination(SrtExpLogDestination dest);
     static void SrtLog_SetSyslogLevel(int level);
 
@@ -35,4 +36,4 @@ public:
     static void SrtLog_Debug(const std::string msg);
 };
 
-} //namespace srt_exporter
+}  // namespace srt_exporter

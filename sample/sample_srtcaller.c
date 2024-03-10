@@ -47,12 +47,13 @@ int main() {
     srtexp_c_label_register("application", "sample_srtcaller", NULL, id);
     srtexp_c_label_register("importance", "special", "pktSentTotal", id);
     srtexp_c_label_register("importance", "normal", "pktSentTotal", id);
-    //srtexp_c_label_register("importance", NULL, "pktSentTotal", id);
+    // srtexp_c_label_register("importance", NULL, "pktSentTotal", id);
     srtexp_c_srt_socket_register(p, 1, id);
 
     do {
         printf("connecting\n");
-        if (SRT_INVALID_SOCK != srt_connect(srtsock, (const struct sockaddr *)&addr, sa_len)) {
+        if (SRT_INVALID_SOCK != srt_connect(
+            srtsock, (const struct sockaddr *)&addr, sa_len)) {
             continueFlag = 0;
         }
         sleep(1);

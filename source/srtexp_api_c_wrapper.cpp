@@ -8,10 +8,10 @@
  *
  */
 
-#include "srtexp_api.hpp"
-#include "srtexp_api_c_wrapper.h"
+#include "export/srtexp_api.hpp"
+#include "export/srtexp_api_c_wrapper.h"
 
-#include "srtexp_define.hpp"
+#include "export/srtexp_define.hpp"
 
 
 #ifdef __cplusplus
@@ -26,20 +26,20 @@ SrtExpCRet srtexp_c_deinit() {
     return (SrtExpCRet)srtexp_deinit();
 }
 
-SrtExpCRet srtexp_c_start(const char *exporterName, int *id) { 
+SrtExpCRet srtexp_c_start(const char *exporterName, int *id) {
     return (SrtExpCRet)srtexp_start(exporterName, id);
 }
 
 SrtExpCRet srtexp_c_stop(const char *exporterName, int id) {
     if (exporterName) {
         return (SrtExpCRet)srtexp_stop(exporterName);
-    }
-    else {
+    } else {
         return (SrtExpCRet)srtexp_stop(id);
     }
 }
 
-SrtExpCRet srtexp_c_label_register(const char *name, const char *value, const char *var, int id) {
+SrtExpCRet srtexp_c_label_register(const char *name, const char *value,
+                                   const char *var, int id) {
     return (SrtExpCRet)srtexp_label_register(name, value, var, id);
 }
 

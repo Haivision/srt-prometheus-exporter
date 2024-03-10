@@ -21,7 +21,7 @@ Also do not hesitate to ask other users for opinion and discuss the ideas using 
 
 ## Code Style
 
-***T.B.D***
+Please follow [Google C++ Style Guideline](https://google.github.io/styleguide/cppguide.html) when coding.
 
 ## Attribution
 

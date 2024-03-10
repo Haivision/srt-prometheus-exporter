@@ -9,8 +9,7 @@
 
 CXX = g++
 
-CFLAGS = -I./include
-CFLAGS += -I./export
+CFLAGS = -I./
 LDFLAGS = -shared
 LDFLAGS += -fPIC
 LDFLAGS += -Wl,-rpath-link
